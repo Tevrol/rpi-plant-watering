@@ -2,7 +2,21 @@ from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import time
 import json
 
+
+# Config Information
+
+
+clientId = "Waterer"
+
+host = ""
+port = "8883"
+rootCAPath = "/home/pi/cert/CA.pem"
+privateKeyPath = "/home/pi/cert/.pem.key"
+certificatePath = "/home/pi/cert/.pem.crt"
+
+
 # Custom MQTT message callback
+topic = "water"
 
 
 def customCallback(client, userdata, message):
@@ -31,4 +45,12 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 myAWSIoTMQTTClient.connect()
 myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
 
-# Publish to the same topic in a loop forever
+# Publish
+
+
+def waterPublish():
+    message = {}
+    message['message'] = ""
+    message['sequence'] = 0
+    messageJson = json.dumps(message)
+    myAWSIoTMQTTClient.publish(topic, messageJson, 1)
