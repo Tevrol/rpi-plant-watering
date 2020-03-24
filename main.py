@@ -6,6 +6,13 @@ from waterLevel import WaterLevel
 
 #https://codereview.stackexchange.com/questions/238105/interactive-discord-bot-for-tabletop-rpg
 
+#configure MQTT connection
+config = {}
+config['host']
+config['port'] = "8883"
+config['rootCAPath'] = "/home/pi/cert/CA.pem"
+config['privateKeyPath'] = "/home/pi/cert/.pem.key"
+config['certificatePath'] = "/home/pi/cert/.pem.crt"
 #init pin variables
 pumpPin = 20
 moisturePin = 20
