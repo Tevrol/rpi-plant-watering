@@ -50,7 +50,7 @@ class Notify:
         message['time'] = datetime.now()
         message['sequence'] = self.sequence++
         messageJson = json.dumps(message)
-        myAWSIoTMQTTClient.publish(topic, messageJson, 1)
+        self.client.publish(self.topic, messageJson, 1)
 
     def notifyWatering(self):
         message = {}
@@ -58,15 +58,26 @@ class Notify:
         message['time'] = datetime.now()
         message['sequence'] = self.sequence++
         messageJson = json.dumps(message)
-        myAWSIoTMQTTClient.publish(topic, messageJson, 1)
+        self.client.publish(self.topic, messageJson, 1)
 
-    def notifyOutOfWater(self):
+    def disablePump(self,reason):
+        self.enable = False
         message = {}
-        message['message'] = "Out of Water"
+        message['message'] = "Pump Disabled"
+        message['reason'] = reason
         message['time'] = datetime.now()
         message['sequence'] = self.sequence++
         messageJson = json.dumps(message)
-        myAWSIoTMQTTClient.publish(topic, messageJson, 1)
+        self.client.publish(self.topic, messageJson, 1)
+
+    def enablePump(self):
+        self.enable = True
+        message = {}
+        message['message'] = "Pump Enabled"
+        message['time'] = datetime.now()
+        message['sequence'] = self.sequence++
+        messageJson = json.dumps(message)
+        self.client.publish(self.topic, messageJson, 1)
 
     def pumpIsEnabled(self):
         return self.enable
