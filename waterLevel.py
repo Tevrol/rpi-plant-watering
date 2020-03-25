@@ -7,6 +7,9 @@ class WaterLevel
         self.waterLevel = 999
         if not self.dummy:
             self.sensor = UltrasonicDistance(trigger,echo)
+        else:
+            print("Warning: Water level sensor set to dummy mode.")
+            print("Pump will run dry in this mode.")
 
     def test(self):
         """
@@ -37,6 +40,12 @@ class WaterLevel
 
         distance = distance / len(distances)
         return distance
+
+    def set(self):
+        if self.dummy:
+            self.waterLevel = 0
+            return
+        self.waterLevel = read()
 
     def waterIsLow(self):
         if self.dummy:
