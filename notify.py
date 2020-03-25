@@ -5,7 +5,7 @@ import json
 
 # Config Information
 class Notify:
-    def __init__(self,config):
+    def __init__(self, config):
         self.clientId = "Waterer"
         self.__host = config.host
         self.__port = config.port
@@ -16,7 +16,8 @@ class Notify:
         self.enablePump = True
         self.sequence = 0
         # initialize
-        self.client = AWSIoTMQTTClient(self.clientId)  # clientId can be anything
+        self.client = AWSIoTMQTTClient(self.clientId)
+        # clientId can be anything
         # host is your Pi’s AWS IoT Endpoint, port is 8883
         self.client.configureEndpoint(self.__host, self.__port)
         self.client.configureCredentials(
@@ -31,8 +32,7 @@ class Notify:
         self.client.configureMQTTOperationTimeout(5)  # 5 sec
         # Connect and subscribe to AWS IoT
 
-
-    def waterCallback(client, userdata, message):
+    def waterCallback(self, client, userdata, message):
         print("Received a new message: ")
         print(message.payload)
         print("from topic: ")
@@ -41,14 +41,15 @@ class Notify:
 
     def connect(self):
         self.client.connect()
-        self.client.subscribe(topic, 1, waterCallback)
+        self.client.subscribe(self.topic, 1, self.waterCallback)
 
     # Publish
     def notifyDry(self):
         message = {}
         message['message'] = "Dry"
         message['time'] = datetime.now()
-        message['sequence'] = self.sequence++
+        message['sequence'] = self.sequence
+        self.sequence += 1
         messageJson = json.dumps(message)
         self.client.publish(self.topic, messageJson, 1)
 
@@ -56,17 +57,19 @@ class Notify:
         message = {}
         message['message'] = "Watering"
         message['time'] = datetime.now()
-        message['sequence'] = self.sequence++
+        message['sequence'] = self.sequence
+        self.sequence += 1
         messageJson = json.dumps(message)
         self.client.publish(self.topic, messageJson, 1)
 
-    def disablePump(self,reason):
+    def disablePump(self, reason):
         self.enable = False
         message = {}
         message['message'] = "Pump Disabled"
         message['reason'] = reason
         message['time'] = datetime.now()
-        message['sequence'] = self.sequence++
+        message['sequence'] = self.sequence
+        self.sequence += 1
         messageJson = json.dumps(message)
         self.client.publish(self.topic, messageJson, 1)
 
@@ -75,7 +78,8 @@ class Notify:
         message = {}
         message['message'] = "Pump Enabled"
         message['time'] = datetime.now()
-        message['sequence'] = self.sequence++
+        message['sequence'] = self.sequence
+        self.sequence += 1
         messageJson = json.dumps(message)
         self.client.publish(self.topic, messageJson, 1)
 
