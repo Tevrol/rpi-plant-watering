@@ -14,6 +14,7 @@ class Notify:
         self.__certificatePath = config.certificatePath
         self.topic = "water"
         self.enablePump = True
+        self.sequence = 0
         # initialize
         self.client = AWSIoTMQTTClient(self.clientId)  # clientId can be anything
         # host is your Pi’s AWS IoT Endpoint, port is 8883
@@ -43,19 +44,27 @@ class Notify:
         self.client.subscribe(topic, 1, waterCallback)
 
     # Publish
-    def notifyDry():
+    def notifyDry(self):
         message = {}
         message['message'] = "Dry"
         message['time'] = datetime.now()
-        message['sequence'] = 0
+        message['sequence'] = self.sequence++
         messageJson = json.dumps(message)
         myAWSIoTMQTTClient.publish(topic, messageJson, 1)
 
-    def notifyWatering():
+    def notifyWatering(self):
         message = {}
         message['message'] = "Watering"
         message['time'] = datetime.now()
-        message['sequence'] = 0
+        message['sequence'] = self.sequence++
+        messageJson = json.dumps(message)
+        myAWSIoTMQTTClient.publish(topic, messageJson, 1)
+
+    def notifyOutOfWater(self):
+        message = {}
+        message['message'] = "Out of Water"
+        message['time'] = datetime.now()
+        message['sequence'] = self.sequence++
         messageJson = json.dumps(message)
         myAWSIoTMQTTClient.publish(topic, messageJson, 1)
 
