@@ -32,7 +32,7 @@ try:
     while True:
         if (moisture.isDry()):
             notify.notifyDry()
-            if notify.isEnabled():
+            if notify.pumpIsEnabled():
                 notify.notifyWatering()
                 pump.pumpForSeconds(1)
         else: #not dry, all is good
