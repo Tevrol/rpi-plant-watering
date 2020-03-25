@@ -26,7 +26,10 @@ notify = Notify(config)
 moisture.test()
 
 #connect to AWS
-
+try:
+    notify.connect()
+except:
+    raise
 #main loop
 try:
     while True:
