@@ -9,9 +9,6 @@ class Pump:
     def __del__(self):
         GPIO.cleanup()
 
-    def test(self):
-        pass
-
     def pumpForSeconds(self, seconds):
         try:
             GPIO.setmode(GPIO.BCM)  # for GPIO pin numbering
