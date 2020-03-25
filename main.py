@@ -21,6 +21,7 @@ moisturePin = 20
 moisture = Moisture(moisturePin)
 pump = Pump(pumpPin)
 notify = Notify(config)
+waterLevel = WaterLevel(0,0,True)
 
 #test modules
 moisture.test()
