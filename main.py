@@ -16,28 +16,25 @@ config['certificatePath'] = "/home/pi/cert/.pem.crt"
 #init pin variables
 pumpPin = 20
 moisturePin = 20
-sonicTriggerPin = 20
-sonicEchoPin = 20
-
-maxWaterDistance = 20
 
 #create objects
 moisture = Moisture(moisturePin)
 pump = Pump(pumpPin)
 notify = Notify(config)
-waterLevel = WaterLevel(sonicTriggerPin,sonicEchoPin)
 
-#test all modules
-waterLevel.test()
+#test modules
 moisture.test()
-pump.test()
 
 #connect to AWS
 
 #main loop
-while True:
-    if (waterLevel.read() < maxWaterDistance):
+try:
+    while True:
         if (moisture.isDry()):
-            pump.pumpForSeconds(5)
+            pump.pumpForSeconds(1)
         else: #not dry, all is good
-    else: #no water
+            sleep(60)
+except KeyboardInterrupt:
+    GPIO.cleanup()
+except:
+    raise
