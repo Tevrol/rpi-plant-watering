@@ -31,7 +31,10 @@ moisture.test()
 try:
     while True:
         if (moisture.isDry()):
-            pump.pumpForSeconds(1)
+            notify.notifyDry()
+            if notify.isEnabled():
+                notify.notifyWatering()
+                pump.pumpForSeconds(1)
         else: #not dry, all is good
             sleep(60)
 except KeyboardInterrupt:
