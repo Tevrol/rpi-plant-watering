@@ -1,4 +1,4 @@
-#imports
+# imports
 from src import Moisture
 from src import Pump
 from src import Notify
@@ -23,11 +23,11 @@ print("Loading Config...")
 
 # TODO - Create a JSON file for all the config & pin numbers
 config = {}
-config['host']
+config['host'] = "a3qo96kfy30a1-ats.iot.us-west-2.amazonaws.com"
 config['port'] = "8883"
-config['rootCAPath'] = "/home/pi/cert/CA.pem"
-config['privateKeyPath'] = "/home/pi/cert/.pem.key"
-config['certificatePath'] = "/home/pi/cert/.pem.crt"
+config['rootCAPath'] = "~/certs/root-CA.crt"
+config['privateKeyPath'] = "~/certs/Waterer.private.key"
+config['certificatePath'] = "~/certs/Waterer.cert.pem"
 # init pin variables
 pumpPin = 20
 moisturePin = 21
