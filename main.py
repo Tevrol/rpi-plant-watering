@@ -1,8 +1,8 @@
 #imports
-from moisture import Moisture
-from pump import Pump
-from notify import Notify
-from waterLevel import WaterLevel
+from src import Moisture
+from src import Pump
+from src import Notify
+from src import WaterLevel
 
 #https://codereview.stackexchange.com/questions/238105/interactive-discord-bot-for-tabletop-rpg
 
@@ -19,6 +19,8 @@ print(
 )
 #configure MQTT connection
 print("Loading Config...")
+
+# TODO - Create a JSON file for all the config & pin numbers
 config = {}
 config['host']
 config['port'] = "8883"
