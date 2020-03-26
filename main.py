@@ -1,19 +1,19 @@
 # imports
-from src import Moisture
-from src import Pump
-from src import Notify
-from src import WaterLevel
+from src.moisture import Moisture
+from src.pump import Pump
+from src.notify import Notify
+from src.waterlevel import WaterLevel
 import time
 
 
 print(
 '''
   _____ _______          _______
- |_   _|  __ \ \        / / ____|
-   | | | |__) \ \  /\  / / (___
-   | | |  ___/ \ \/  \/ / \___ \
-  _| |_| |      \  /\  /  ____) |
- |_____|_|       \/  \/  |_____/
+ |_   _|  __ \\ \\        / / ____|
+   | | | |__) \\ \\  /\\  / / (___
+   | | |  ___/ \\ \\/  \\/ / \\___ \\
+  _| |_| |      \\  /\\  /  ____) |
+ |_____|_|       \\/  \\/  |_____/
   IoT  Plant    Watering  System
 '''
 )
@@ -24,9 +24,9 @@ print("Loading Config...")
 config = {}
 config['host'] = "a3qo96kfy30a1-ats.iot.us-west-2.amazonaws.com"
 config['port'] = "8883"
-config['rootCAPath'] = "~/certs/root-CA.crt"
-config['privateKeyPath'] = "~/certs/Waterer.private.key"
-config['certificatePath'] = "~/certs/Waterer.cert.pem"
+config['rootCAPath'] = "/home/pi/certs/root-CA.crt"
+config['privateKeyPath'] = "/home/pi/certs/Waterer.private.key"
+config['certificatePath'] = "/home/pi/certs/Waterer.cert.pem"
 # init pin variables
 pumpPin = 20
 moisturePin = 21
@@ -59,7 +59,7 @@ try:
         notify.disablePump("Water is low") if waterLevel.waterIsLow() else notify.enablePump()
         if moisture.isDry():
             notify.notifyDry()
-            if notify.pumpIsEnabled():
+            if notify.pumpIsEnabled:
                 print("Sending notification and turning on pump.")
                 notify.notifyWatering()
                 pump.pumpForSeconds(1)

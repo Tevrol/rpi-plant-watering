@@ -7,18 +7,16 @@ import json
 class Notify:
     def __init__(self, config):
         self.clientId = "Waterer"
-        self.__host = config.host
-        self.__port = config.port
-        self.__rootCAPath = config.rootCAPath
-        self.__privateKeyPath = config.privateKeyPath
-        self.__certificatePath = config.certificatePath
+        self.__host = config['host']
+        self.__port = config['port']
+        self.__rootCAPath = config['rootCAPath']
+        self.__privateKeyPath = config['privateKeyPath']
+        self.__certificatePath = config['certificatePath']
         self.topic = "water"
-        self.enablePump = True
+        self.pumpIsEnabled = True
         self.sequence = 0
         # initialize
         self.client = AWSIoTMQTTClient(self.clientId)
-        # clientId can be anything
-        # host is your Pi’s AWS IoT Endpoint, port is 8883
         self.client.configureEndpoint(self.__host, self.__port)
         self.client.configureCredentials(
             self.__rootCAPath, self.__privateKeyPath, self.__certificatePath)
@@ -67,7 +65,7 @@ class Notify:
 
     def disablePump(self, reason):
         print("Sending pump disabled notification to cloud for reason: ",reason,".")
-        self.enable = False
+        self.pumpIsEnabled = False
         message = {}
         message['message'] = "Pump Disabled"
         message['reason'] = reason
@@ -79,7 +77,7 @@ class Notify:
 
     def enablePump(self):
         print("Sending pump enabled notification to cloud.")
-        self.enable = True
+        self.pumpIsEnabled = True
         message = {}
         message['message'] = "Pump Enabled"
         message['time'] = datetime.now()
@@ -87,6 +85,3 @@ class Notify:
         self.sequence += 1
         messageJson = json.dumps(message)
         self.client.publish(self.topic, messageJson, 1)
-
-    def pumpIsEnabled(self):
-        return self.enable

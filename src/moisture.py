@@ -16,7 +16,8 @@ class Moisture:
                     count += 1
             if (count > 5):
                 return True
-            else raise Exception("Moisture sensor failed test")
+            else:
+                raise Exception("Moisture sensor failed test")
             return False
 
     def read(self):
