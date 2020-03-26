@@ -1,10 +1,10 @@
 import RPi.GPIO as GPIO
 import time
 
-class Pump:
-    def __init__(self,pin):
-        self.pin = pin
 
+class Pump:
+    def __init__(self, pin):
+        self.pin = pin
 
     def __del__(self):
         GPIO.cleanup()
@@ -16,7 +16,7 @@ class Pump:
             GPIO.output(self.pin, 1)
             time.sleep(seconds)
             GPIO.output(self.pin, 0)
-        except Exception as e:
+        except Exception:
             pass
         finally:
             GPIO.cleanup()

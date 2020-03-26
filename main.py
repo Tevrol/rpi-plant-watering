@@ -28,7 +28,7 @@ config['privateKeyPath'] = "/home/pi/cert/.pem.key"
 config['certificatePath'] = "/home/pi/cert/.pem.crt"
 # init pin variables
 pumpPin = 20
-moisturePin = 20
+moisturePin = 21
 
 # create objects
 print("Creating Objects...")
