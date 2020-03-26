@@ -3,8 +3,9 @@ from src import Moisture
 from src import Pump
 from src import Notify
 from src import WaterLevel
+import time
 
-#https://codereview.stackexchange.com/questions/238105/interactive-discord-bot-for-tabletop-rpg
+# https://codereview.stackexchange.com/questions/238105/interactive-discord-bot-for-tabletop-rpg
 
 print(
 '''
@@ -17,7 +18,7 @@ print(
   IoT  Plant    Watering  System
 '''
 )
-#configure MQTT connection
+# configure MQTT connection
 print("Loading Config...")
 
 # TODO - Create a JSON file for all the config & pin numbers
@@ -27,32 +28,32 @@ config['port'] = "8883"
 config['rootCAPath'] = "/home/pi/cert/CA.pem"
 config['privateKeyPath'] = "/home/pi/cert/.pem.key"
 config['certificatePath'] = "/home/pi/cert/.pem.crt"
-#init pin variables
+# init pin variables
 pumpPin = 20
-moisturePin = 20
+moisturePin = 21
 
-#create objects
+# create objects
 print("Creating Objects...")
 moisture = Moisture(moisturePin)
 pump = Pump(pumpPin)
 notify = Notify(config)
-waterLevel = WaterLevel(0,0,True)
+waterLevel = WaterLevel(0, 0, True)
 
-#test modules
+# test modules
 print("Testing Modules...")
 moisture.test()
 waterLevel.test()
 
-#set water level
+# set water level
 waterLevel.set()
 
-#connect to AWS
+# connect to AWS
 print("Connecting to AWS...")
 try:
     notify.connect()
-except:
+except Exception:
     raise
-#main loop
+# main loop
 print("Beginning to monitor soil moisture.")
 try:
     while True:
@@ -65,10 +66,10 @@ try:
                 pump.pumpForSeconds(1)
                 print("Turning off pump and sleeping.")
 
-        else: #not dry, all is good
+        else:  # not dry, all is good
             print("Soil is moist.")
-        sleep(60)
+        time.sleep(60)
 except KeyboardInterrupt:
-    GPIO.cleanup()
-except:
+    raise
+except Exception:
     raise
