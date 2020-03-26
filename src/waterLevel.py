@@ -23,6 +23,7 @@ class WaterLevel:
                 return True
             else:
                 time.sleep(0.1)
+        raise Exception("Water level sensor failed test")
         return False
 
     def read(self):

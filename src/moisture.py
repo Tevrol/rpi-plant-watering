@@ -10,14 +10,13 @@ class Moisture:
         GPIO.cleanup()
 
     def test(self):
-        try:
             count = 0
             for x in range(10):
                 if (self.read() is not None):
                     count += 1
             if (count > 5):
                 return True
-        except Exception:
+            else raise Exception("Moisture sensor failed test")
             return False
 
     def read(self):

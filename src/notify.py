@@ -38,6 +38,7 @@ class Notify:
         print("from topic: ")
         print(message.topic)
         print("--------------\n\n")
+        # TODO - disable pump from MQTT message
 
     def connect(self):
         self.client.connect()
@@ -45,6 +46,7 @@ class Notify:
 
     # Publish
     def notifyDry(self):
+        print("Sending dry notification to cloud.")
         message = {}
         message['message'] = "Dry"
         message['time'] = datetime.now()
@@ -54,6 +56,7 @@ class Notify:
         self.client.publish(self.topic, messageJson, 1)
 
     def notifyWatering(self):
+        print("Sending watering notification to cloud.")
         message = {}
         message['message'] = "Watering"
         message['time'] = datetime.now()
@@ -63,6 +66,7 @@ class Notify:
         self.client.publish(self.topic, messageJson, 1)
 
     def disablePump(self, reason):
+        print("Sending pump disabled notification to cloud for reason: ",reason,".")
         self.enable = False
         message = {}
         message['message'] = "Pump Disabled"
@@ -74,6 +78,7 @@ class Notify:
         self.client.publish(self.topic, messageJson, 1)
 
     def enablePump(self):
+        print("Sending pump enabled notification to cloud.")
         self.enable = True
         message = {}
         message['message'] = "Pump Enabled"

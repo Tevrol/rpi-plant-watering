@@ -5,7 +5,6 @@ from src import Notify
 from src import WaterLevel
 import time
 
-# https://codereview.stackexchange.com/questions/238105/interactive-discord-bot-for-tabletop-rpg
 
 print(
 '''
@@ -57,15 +56,14 @@ except Exception:
 print("Beginning to monitor soil moisture.")
 try:
     while True:
-        if (moisture.isDry()):
-            print("Soil is dry, sending notification.")
+        notify.disablePump("Water is low") if waterLevel.waterIsLow() else notify.enablePump()
+        if moisture.isDry():
             notify.notifyDry()
-            if notify.pumpIsEnabled() and not waterLevel.waterIsLow():
+            if notify.pumpIsEnabled():
                 print("Sending notification and turning on pump.")
                 notify.notifyWatering()
                 pump.pumpForSeconds(1)
                 print("Turning off pump and sleeping.")
-
         else:  # not dry, all is good
             print("Soil is moist.")
         time.sleep(60)
