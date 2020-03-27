@@ -27,7 +27,7 @@ class Moisture:
             # set button pin to an input port and set to pull-down mode
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-            result = not(GPIO.input(self.pin))
+            result = GPIO.input(self.pin)
         except Exception:
             return None
         finally:

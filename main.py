@@ -56,17 +56,21 @@ except Exception:
 print("Beginning to monitor soil moisture.")
 try:
     while True:
-        notify.disablePump("Water is low") if waterLevel.waterIsLow() else notify.enablePump()
+        if waterLevel.waterIsLow():
+            if notify.pumpIsEnabled:
+                notify.disablePump("Water is low")
+        elif not notify.pumpIsEnabled:
+            notify.enablePump()
         if moisture.isDry():
             notify.notifyDry()
             if notify.pumpIsEnabled:
                 print("Sending notification and turning on pump.")
                 notify.notifyWatering()
-                pump.pumpForSeconds(1)
+                pump.pumpForSeconds(3)
                 print("Turning off pump and sleeping.")
         else:  # not dry, all is good
             print("Soil is moist.")
-        time.sleep(60)
+        time.sleep(30)
 except KeyboardInterrupt:
     raise
 except Exception:

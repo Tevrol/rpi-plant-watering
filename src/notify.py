@@ -47,7 +47,7 @@ class Notify:
         print("Sending dry notification to cloud.")
         message = {}
         message['message'] = "Dry"
-        message['time'] = datetime.now()
+        message['time'] = datetime.now().__str__()
         message['sequence'] = self.sequence
         self.sequence += 1
         messageJson = json.dumps(message)
@@ -57,7 +57,7 @@ class Notify:
         print("Sending watering notification to cloud.")
         message = {}
         message['message'] = "Watering"
-        message['time'] = datetime.now()
+        message['time'] = datetime.now().__str__()
         message['sequence'] = self.sequence
         self.sequence += 1
         messageJson = json.dumps(message)
@@ -69,7 +69,7 @@ class Notify:
         message = {}
         message['message'] = "Pump Disabled"
         message['reason'] = reason
-        message['time'] = datetime.now()
+        message['time'] = datetime.now().__str__()
         message['sequence'] = self.sequence
         self.sequence += 1
         messageJson = json.dumps(message)
@@ -80,7 +80,7 @@ class Notify:
         self.pumpIsEnabled = True
         message = {}
         message['message'] = "Pump Enabled"
-        message['time'] = datetime.now()
+        message['time'] = datetime.now().__str__()
         message['sequence'] = self.sequence
         self.sequence += 1
         messageJson = json.dumps(message)

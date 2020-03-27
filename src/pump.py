@@ -10,13 +10,10 @@ class Pump:
         GPIO.cleanup()
 
     def pumpForSeconds(self, seconds):
-        try:
-            GPIO.setmode(GPIO.BCM)  # for GPIO pin numbering
-            GPIO.setwarnings(False)  # disable warnings
-            GPIO.output(self.pin, 1)
-            time.sleep(seconds)
-            GPIO.output(self.pin, 0)
-        except Exception:
-            pass
-        finally:
-            GPIO.cleanup()
+        GPIO.setmode(GPIO.BCM)  # for GPIO pin numbering
+        GPIO.setwarnings(False)  # disable warnings
+        GPIO.setup(self.pin, GPIO.OUT)
+        GPIO.output(self.pin, 1)
+        time.sleep(seconds)
+        GPIO.output(self.pin, 0)
+        GPIO.cleanup()
