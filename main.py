@@ -1,47 +1,77 @@
-#imports
-from moisture import Moisture
-from pump import Pump
-from notify import Notify
-from waterLevel import WaterLevel
+# imports
+from src.moisture import Moisture
+from src.pump import Pump
+from src.notify import Notify
+from src.waterlevel import WaterLevel
+import time
 
-#https://codereview.stackexchange.com/questions/238105/interactive-discord-bot-for-tabletop-rpg
 
-#configure MQTT connection
+print(
+'''
+  _____ _______          _______
+ |_   _|  __ \\ \\        / / ____|
+   | | | |__) \\ \\  /\\  / / (___
+   | | |  ___/ \\ \\/  \\/ / \\___ \\
+  _| |_| |      \\  /\\  /  ____) |
+ |_____|_|       \\/  \\/  |_____/
+  IoT  Plant    Watering  System
+'''
+)
+# configure MQTT connection
+print("Loading Config...")
+
+# TODO - Create a JSON file for all the config & pin numbers
 config = {}
-config['host']
+config['host'] = "a3qo96kfy30a1-ats.iot.us-west-2.amazonaws.com"
 config['port'] = "8883"
-config['rootCAPath'] = "/home/pi/cert/CA.pem"
-config['privateKeyPath'] = "/home/pi/cert/.pem.key"
-config['certificatePath'] = "/home/pi/cert/.pem.crt"
-#init pin variables
+config['rootCAPath'] = "/home/pi/certs/root-CA.crt"
+config['privateKeyPath'] = "/home/pi/certs/Waterer.private.key"
+config['certificatePath'] = "/home/pi/certs/Waterer.cert.pem"
+# init pin variables
 pumpPin = 20
-moisturePin = 20
+moisturePin = 21
 
-#create objects
+# create objects
+print("Creating Objects...")
 moisture = Moisture(moisturePin)
 pump = Pump(pumpPin)
 notify = Notify(config)
-waterLevel = WaterLevel(0,0,True)
+waterLevel = WaterLevel(0, 0, True)
 
-#test modules
+# test modules
+print("Testing Modules...")
 moisture.test()
+waterLevel.test()
 
-#connect to AWS
+# set water level
+waterLevel.set()
+
+# connect to AWS
+print("Connecting to AWS...")
 try:
     notify.connect()
-except:
+except Exception:
     raise
-#main loop
+# main loop
+print("Beginning to monitor soil moisture.")
 try:
     while True:
-        if (moisture.isDry()):
+        if waterLevel.waterIsLow():
+            if notify.pumpIsEnabled:
+                notify.disablePump("Water is low")
+        elif not notify.pumpIsEnabled:
+            notify.enablePump()
+        if moisture.isDry():
             notify.notifyDry()
-            if notify.pumpIsEnabled():
+            if notify.pumpIsEnabled:
+                print("Sending notification and turning on pump.")
                 notify.notifyWatering()
-                pump.pumpForSeconds(1)
-        else: #not dry, all is good
-            sleep(60)
+                pump.pumpForSeconds(3)
+                print("Turning off pump and sleeping.")
+        else:  # not dry, all is good
+            print("Soil is moist.")
+        time.sleep(30)
 except KeyboardInterrupt:
-    GPIO.cleanup()
-except:
+    raise
+except Exception:
     raise

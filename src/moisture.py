@@ -1,22 +1,23 @@
 import RPi.GPIO as GPIO
 import time
 
+
 class Moisture:
-    def __init__(self,pin):
+    def __init__(self, pin):
         self.pin = pin
 
     def __del__(self):
         GPIO.cleanup()
 
     def test(self):
-        try:
             count = 0
             for x in range(10):
-                if (read() != None):
-                    count++
+                if (self.read() is not None):
+                    count += 1
             if (count > 5):
                 return True
-        except Exception as e:
+            else:
+                raise Exception("Moisture sensor failed test")
             return False
 
     def read(self):
@@ -26,8 +27,8 @@ class Moisture:
             # set button pin to an input port and set to pull-down mode
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-            result = not(GPIO.input(self.pin))
-        except Exception as e:
+            result = GPIO.input(self.pin)
+        except Exception:
             return None
         finally:
             GPIO.cleanup()
@@ -36,9 +37,10 @@ class Moisture:
     def isDry(self):
         count = 0
         for x in range(9):
-            if read():
-                count++
+            if self.read():
+                count += 1
             time.sleep(0.05)
         if (count > 7):
             return True
-        else return False
+        else:
+            return False
