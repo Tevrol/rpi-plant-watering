@@ -54,6 +54,7 @@ except Exception:
     raise
 # main loop
 print("Beginning to monitor soil moisture.")
+time.sleep(2)
 try:
     while True:
         if waterLevel.waterIsLow():

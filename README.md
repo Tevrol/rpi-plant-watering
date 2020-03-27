@@ -14,11 +14,12 @@ Soil moisture monitoring & plant watering system built using Raspberry Pi and co
 ### Setup
 
 1. Create a Thing on the AWS IoT Core to represent the waterer
-2. Install the Python AWS IoT SDK
-3. Install the Amazon Root CA certificate, the IoT Thing certificate, and IoT Thing private key
-4. Assemble the waterer circuit
-5. Edit the waterer configuration with the appropriate AWS endpoint and module pin numbers
-6. (Optional) Edit the waterer configuration to use a water level sensor
+2. Update the AWS Thing policy to allow your planned Client ID and the "water" and "watererCommmand" topics
+3. Install the Python AWS IoT SDK
+4. Install the Amazon Root CA certificate, the IoT Thing certificate, and IoT Thing private key to /home/pi/certs/
+5. Assemble the waterer circuit
+6. Edit the waterer configuration with the appropriate AWS endpoint and module pin numbers
+7. (Optional) Edit the waterer configuration to use a water level sensor
 
 ### Running the System
 

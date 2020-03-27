@@ -13,6 +13,7 @@ class Notify:
         self.__privateKeyPath = config['privateKeyPath']
         self.__certificatePath = config['certificatePath']
         self.topic = "water"
+        self.commandTopic = "watererCommmand"
         self.pumpIsEnabled = True
         self.sequence = 0
         # initialize
@@ -30,38 +31,27 @@ class Notify:
         self.client.configureMQTTOperationTimeout(5)  # 5 sec
         # Connect and subscribe to AWS IoT
 
-    def waterCallback(self, client, userdata, message):
-        print("Received a new message: ")
-        print(message.payload)
-        print("from topic: ")
-        print(message.topic)
-        print("--------------\n\n")
-        # TODO - disable pump from MQTT message
+
+    def receiveWaterCommand(self, client, userdata, message):
+        message = json.loads(message.payload)['message']
+        if message == "Disable Pump":
+            self.disablePump("Disabled from cloud")
+        elif message == "Enable Pump":
+            self.enablePump()
+        else pass
 
     def connect(self):
         self.client.connect()
-        self.client.subscribe(self.topic, 1, self.waterCallback)
+        self.client.subscribe(self.commandTopic, 1, self.receiveWaterCommand)
 
     # Publish
     def notifyDry(self):
         print("Sending dry notification to cloud.")
-        message = {}
-        message['message'] = "Dry"
-        message['time'] = datetime.now().__str__()
-        message['sequence'] = self.sequence
-        self.sequence += 1
-        messageJson = json.dumps(message)
-        self.client.publish(self.topic, messageJson, 1)
+        publishBasicMessage("Dry")
 
     def notifyWatering(self):
         print("Sending watering notification to cloud.")
-        message = {}
-        message['message'] = "Watering"
-        message['time'] = datetime.now().__str__()
-        message['sequence'] = self.sequence
-        self.sequence += 1
-        messageJson = json.dumps(message)
-        self.client.publish(self.topic, messageJson, 1)
+        publishBasicMessage("Watering")
 
     def disablePump(self, reason):
         print("Sending pump disabled notification to cloud for reason: ",reason,".")
@@ -78,8 +68,12 @@ class Notify:
     def enablePump(self):
         print("Sending pump enabled notification to cloud.")
         self.pumpIsEnabled = True
+        publishBasicMessage("Pump is enabled")
+
+
+    def publishBasicMessage(self,messageText):
         message = {}
-        message['message'] = "Pump Enabled"
+        message['message'] = messageText
         message['time'] = datetime.now().__str__()
         message['sequence'] = self.sequence
         self.sequence += 1
