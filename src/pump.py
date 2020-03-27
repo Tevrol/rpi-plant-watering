@@ -13,7 +13,6 @@ class Pump:
         GPIO.setmode(GPIO.BCM)  # for GPIO pin numbering
         GPIO.setwarnings(False)  # disable warnings
         GPIO.setup(self.pin, GPIO.OUT)
-        GPIO.output(self.pin, 1)
-        time.sleep(seconds)
         GPIO.output(self.pin, 0)
-        GPIO.cleanup()
+        time.sleep(seconds)
+        GPIO.output(self.pin, 1)
