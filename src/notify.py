@@ -6,16 +6,23 @@ import json
 # Config Information
 class Notify:
     def __init__(self, config):
-        self.clientId = "Waterer"
+        self.clientId = "Waterer" # This is currently static.
+
+        # AWS connection details from constructor
         self.__host = config['host']
         self.__port = config['port']
         self.__rootCAPath = config['rootCAPath']
         self.__privateKeyPath = config['privateKeyPath']
         self.__certificatePath = config['certificatePath']
+
+        # topic to publish to and command topic to subscribe to
         self.topic = "water"
         self.commandTopic = "watererCommmand"
+
+        # initial state
         self.pumpIsEnabled = True
         self.sequence = 0
+
         # initialize
         self.client = AWSIoTMQTTClient(self.clientId)
         self.client.configureEndpoint(self.__host, self.__port)
@@ -29,8 +36,6 @@ class Notify:
         self.client.configureDrainingFrequency(2)  # Draining: 2 Hz
         self.client.configureConnectDisconnectTimeout(10)  # 10 sec
         self.client.configureMQTTOperationTimeout(5)  # 5 sec
-        # Connect and subscribe to AWS IoT
-
 
     def receiveWaterCommand(self, client, userdata, message):
         message = json.loads(message.payload)['message']
@@ -41,6 +46,9 @@ class Notify:
         else pass
 
     def connect(self):
+        """
+        Connects to the AWS MQTT broker and subscribes to the command topic
+        """
         self.client.connect()
         self.client.subscribe(self.commandTopic, 1, self.receiveWaterCommand)
 
@@ -54,6 +62,12 @@ class Notify:
         publishBasicMessage("Watering")
 
     def disablePump(self, reason):
+        """
+        Disables the pump and sends a notifcation w/ disable reason to the AWS cloud.
+
+        Args:
+            reason (str): Reason for disabling the pump
+        """
         print("Sending pump disabled notification to cloud for reason: ",reason,".")
         self.pumpIsEnabled = False
         message = {}
@@ -66,12 +80,22 @@ class Notify:
         self.client.publish(self.topic, messageJson, 1)
 
     def enablePump(self):
+        """
+        Enables the pump and notifies the cloud.
+        """
         print("Sending pump enabled notification to cloud.")
         self.pumpIsEnabled = True
         publishBasicMessage("Pump is enabled")
 
 
     def publishBasicMessage(self,messageText):
+        """
+        Publishes a basic message to the AWS cloud using the configured topic.
+        Sends a message, current time, and sequence number to the cloud. Updates the MQTT sequence number.
+
+        Args:
+            messageText (str): The message text to be send as the message property of the MQTT message
+        """
         message = {}
         message['message'] = messageText
         message['time'] = datetime.now().__str__()

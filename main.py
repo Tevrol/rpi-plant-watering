@@ -36,12 +36,14 @@ print("Creating Objects...")
 moisture = Moisture(moisturePin)
 pump = Pump(pumpPin)
 notify = Notify(config)
-waterLevel = WaterLevel(0, 0, True)
+waterLevel = WaterLevel(0, 0, True) # Water level sensor created in dummy mode
 
 # test modules
 print("Testing Modules...")
-moisture.test()
-waterLevel.test()
+if not moisture.test():
+    raise Exception("Moisture sensor failed test.")
+if not waterLevel.test():
+    raise Exception("Water level sensor failed test.")
 
 # set water level
 waterLevel.set()
@@ -54,14 +56,19 @@ except Exception:
     raise
 # main loop
 print("Beginning to monitor soil moisture.")
-time.sleep(2)
+time.sleep(2) # small delay before monitoring so it doesn't immediately start flooding console with stuff
+
 try:
     while True:
+
+        # Water level check, if low disable pump
         if waterLevel.waterIsLow():
             if notify.pumpIsEnabled:
                 notify.disablePump("Water is low")
         elif not notify.pumpIsEnabled:
             notify.enablePump()
+
+        # moisture check
         if moisture.isDry():
             notify.notifyDry()
             if notify.pumpIsEnabled:
@@ -71,6 +78,7 @@ try:
                 print("Turning off pump and sleeping.")
         else:  # not dry, all is good
             print("Soil is moist.")
+
         time.sleep(30)
 except KeyboardInterrupt:
     raise
