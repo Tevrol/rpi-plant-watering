@@ -1,7 +1,7 @@
 # imports
 from src.moisture import Moisture
 from src.pump import Pump
-from src.notify import Notify
+from src.ipwsclient import IpwsClient
 from src.waterlevel import WaterLevel
 import time
 
@@ -35,7 +35,7 @@ moisturePin = 21
 print("Creating Objects...")
 moisture = Moisture(moisturePin)
 pump = Pump(pumpPin)
-notify = Notify(config)
+ipwsClient = IpwsClient(config)
 waterLevel = WaterLevel(0, 0, True) # Water level sensor created in dummy mode
 
 # test modules
@@ -51,7 +51,7 @@ waterLevel.set()
 # connect to AWS
 print("Connecting to AWS...")
 try:
-    notify.connect()
+    ipwsClient.connect()
 except Exception:
     raise
 # main loop
@@ -63,17 +63,17 @@ try:
 
         # Water level check, if low disable pump
         if waterLevel.waterIsLow():
-            if notify.pumpIsEnabled:
-                notify.disablePump("Water is low")
-        elif not notify.pumpIsEnabled:
-            notify.enablePump()
+            if ipwsClient.pumpIsEnabled:
+                ipwsClient.disablePump("Water is low")
+        elif not ipwsClient.pumpIsEnabled:
+            ipwsClient.enablePump()
 
         # moisture check
         if moisture.isDry():
-            notify.notifyDry()
-            if notify.pumpIsEnabled:
+            ipwsClient.notifyDry()
+            if ipwsClient.pumpIsEnabled:
                 print("Sending notification and turning on pump.")
-                notify.notifyWatering()
+                ipwsClient.notifyWatering()
                 pump.pumpForSeconds(3)
                 print("Turning off pump and sleeping.")
         else:  # not dry, all is good

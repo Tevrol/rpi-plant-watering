@@ -4,7 +4,7 @@ import json
 
 
 # Config Information
-class Notify:
+class IpwsClient:
     def __init__(self, config):
         self.clientId = "Waterer" # This is currently static.
 
