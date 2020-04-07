@@ -85,7 +85,7 @@ class IpwsClient:
         Args:
             reason (str): Reason for disabling the pump
         """
-        print("Sending pump disabled notification to cloud for reason: ", reason, ".")
+        print("Sending pump disabled notification to cloud for reason: %s." % reason)
         self.pumpIsEnabled = False
         message = {}
         message['message'] = "Pump Disabled"
