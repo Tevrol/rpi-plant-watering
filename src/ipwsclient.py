@@ -17,7 +17,7 @@ class IpwsClient:
 
         # topic to publish to and command topic to subscribe to
         self.topic = "water"
-        self.commandTopic = "watererCommmand"
+        self.commandTopic = "watererCommand"
 
         # initial state
         self.pumpIsEnabled = True
