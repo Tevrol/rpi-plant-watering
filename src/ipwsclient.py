@@ -6,7 +6,7 @@ import json
 # Config Information
 class IpwsClient:
     def __init__(self, config):
-        self.clientId = "Waterer" # This is currently static.
+        self.clientId = "Waterer"  # This is currently static.
 
         # AWS connection details from constructor
         self.__host = config['host']
@@ -43,7 +43,8 @@ class IpwsClient:
             self.disablePump("Disabled from cloud")
         elif message == "Enable Pump":
             self.enablePump()
-        else pass
+        else:
+            pass
 
     def connect(self):
         """
@@ -52,14 +53,30 @@ class IpwsClient:
         self.client.connect()
         self.client.subscribe(self.commandTopic, 1, self.receiveWaterCommand)
 
+    def publishBasicMessage(self, messageText):
+        """
+        Publishes a basic message to the AWS cloud using the configured topic.
+        Sends a message, current time, and sequence number to the cloud. Updates the MQTT sequence number.
+
+        Args:
+            messageText (str): The message text to be send as the message property of the MQTT message
+        """
+        message = {}
+        message['message'] = messageText
+        message['time'] = datetime.now().__str__()
+        message['sequence'] = self.sequence
+        self.sequence += 1
+        messageJson = json.dumps(message)
+        self.client.publish(self.topic, messageJson, 1)
+
     # Publish
     def notifyDry(self):
         print("Sending dry notification to cloud.")
-        publishBasicMessage("Dry")
+        self.publishBasicMessage("Dry")
 
     def notifyWatering(self):
         print("Sending watering notification to cloud.")
-        publishBasicMessage("Watering")
+        self.publishBasicMessage("Watering")
 
     def disablePump(self, reason):
         """
@@ -68,7 +85,7 @@ class IpwsClient:
         Args:
             reason (str): Reason for disabling the pump
         """
-        print("Sending pump disabled notification to cloud for reason: ",reason,".")
+        print("Sending pump disabled notification to cloud for reason: ", reason, ".")
         self.pumpIsEnabled = False
         message = {}
         message['message'] = "Pump Disabled"
@@ -85,21 +102,4 @@ class IpwsClient:
         """
         print("Sending pump enabled notification to cloud.")
         self.pumpIsEnabled = True
-        publishBasicMessage("Pump is enabled")
-
-
-    def publishBasicMessage(self,messageText):
-        """
-        Publishes a basic message to the AWS cloud using the configured topic.
-        Sends a message, current time, and sequence number to the cloud. Updates the MQTT sequence number.
-
-        Args:
-            messageText (str): The message text to be send as the message property of the MQTT message
-        """
-        message = {}
-        message['message'] = messageText
-        message['time'] = datetime.now().__str__()
-        message['sequence'] = self.sequence
-        self.sequence += 1
-        messageJson = json.dumps(message)
-        self.client.publish(self.topic, messageJson, 1)
+        self.publishBasicMessage("Pump is enabled")
