@@ -13,15 +13,15 @@ class Moisture:
         Returns:
             bool: True if test passed, False otherwise.
         """
-            count = 0
-            for x in range(10):
-                if (self.read() is not None):
-                    count += 1
-            if (count > 5):
-                return True
-            else:
-                raise Exception("Moisture sensor failed test")
-            return False
+        count = 0
+        for x in range(10):
+            if (self.read() is not None):
+                count += 1
+        if (count > 5):
+            return True
+        else:
+            raise Exception("Moisture sensor failed test")
+        return False
 
     def read(self):
         """
