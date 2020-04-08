@@ -88,7 +88,7 @@ class IpwsClient:
         print("Sending pump disabled notification to cloud for reason: %s." % reason)
         self.pumpIsEnabled = False
         message = {}
-        message['message'] = "Pump Disabled"
+        message['message'] = "PumpDisabled"
         message['reason'] = reason
         message['time'] = datetime.now().__str__()
         message['sequence'] = self.sequence
@@ -102,4 +102,4 @@ class IpwsClient:
         """
         print("Sending pump enabled notification to cloud.")
         self.pumpIsEnabled = True
-        self.publishBasicMessage("Pump is enabled")
+        self.publishBasicMessage("PumpEnabled")
