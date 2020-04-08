@@ -65,8 +65,6 @@ try:
         if waterLevel.waterIsLow():
             if ipwsClient.pumpIsEnabled:
                 ipwsClient.disablePump("Water is low")
-        elif not ipwsClient.pumpIsEnabled:
-            ipwsClient.enablePump()
 
         # moisture check
         if moisture.isDry():
