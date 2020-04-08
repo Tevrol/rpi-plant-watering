@@ -67,7 +67,7 @@ class IpwsClient:
         message['sequence'] = self.sequence
         self.sequence += 1
         messageJson = json.dumps(message)
-        self.client.publish(self.topic, messageJson, 1)
+        self.client.publish(self.topic, messageJson, 0)
 
     # Publish
     def notifyDry(self):
@@ -94,7 +94,7 @@ class IpwsClient:
         message['sequence'] = self.sequence
         self.sequence += 1
         messageJson = json.dumps(message)
-        self.client.publish(self.topic, messageJson, 1)
+        self.client.publish(self.topic, messageJson, 0)
 
     def enablePump(self):
         """
